@@ -20,7 +20,7 @@ class Match
   end
 
   def screen_params
-    Ruby2D::Window.set background: '#b8d8be'
+    Ruby2D::Window.set background: '#b8d8be', title: 'SNAKE'
     Ruby2D::Window.set fps_cap: 20
   end
 
