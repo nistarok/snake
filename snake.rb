@@ -1,12 +1,9 @@
 class Snake
   # DEFAULT
   # square_size=20
-
   DIRECTIONS=['up', 'down', 'left', 'right']
-
   X_MOVEMENT={'down' => 0, 'up' => 0, 'left' =>-1, 'right' =>+1}
   Y_MOVEMENT={'down' => 1, 'up' => -1, 'left' =>0, 'right' =>0}
-
   FORBIDDEN_MOVEMENT={'down' => 'up', 'up' => 'down', 'left' =>'right', 'right' =>'left'}
 
   attr_accessor :direction,
@@ -32,19 +29,19 @@ class Snake
     self.direction = x_index ? 'right' : 'down'
 
     4.times do |index|
-      body.push [(x_index ? index : 0) + x_start_position, (x_index ? 0 : index) + y_start_position]
+      self.body.push [(x_index ? index : 0) + x_start_position, (x_index ? 0 : index) + y_start_position]
     end
   end
 
   def draw
-    body.each do |t|
+    self.body.each do |t|
       Square.new(x: t[0]*square_size, y: t[1]*square_size , color: '#5a5255', size: square_size-1)
     end
   end
 
   def move
-    body.shift unless growing
-    body.push(set_position(x_direction, y_direction))
+    self.body.shift unless growing
+    self.body.push(set_position(x_direction, y_direction))
     self.growing = false
     true
   end
@@ -67,13 +64,13 @@ class Snake
   end
 
   def auto_hit?
-    body.uniq.length != body.length
+    self.body.uniq.length != self.body.length
   end
 
 
   private
     def head
-      body.last
+      self.body.last
     end
 
     def can_change_direction? new_dir
