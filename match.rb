@@ -15,7 +15,7 @@ class Match
 
   def start_game
     @snake = Snake.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
-    @game = Game.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
+    @game = Game.new
     @ball = Ball.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
   end
 

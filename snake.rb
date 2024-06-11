@@ -1,9 +1,6 @@
 class Snake
   # DEFAULT
-  # @square_size=20
-  X_POSITION= 10
-  Y_POSITION= 10
-  X_INDEX = true
+  # square_size=20
 
   DIRECTIONS=['up', 'down', 'left', 'right']
 
@@ -12,31 +9,44 @@ class Snake
 
   FORBIDDEN_MOVEMENT={'down' => 'up', 'up' => 'down', 'left' =>'right', 'right' =>'left'}
 
-  attr_writer :direction
+  attr_accessor :direction,
+                :square_size,
+                :screen_width,
+                :screen_height,
+                :x_index,
+                :x_start_position,
+                :y_start_position,
+                :body,
+                :growing
 
   def initialize **kwargs
-    @tail = []
-    @square_size = kwargs[:square_size]
-    @screen_width = kwargs[:screen_width]
-    @screen_height = kwargs[:screen_height]
+    self.growing = false
+    self.body = []
+    self.square_size = kwargs[:square_size]
+    self.screen_width = kwargs[:screen_width]
+    self.screen_height = kwargs[:screen_height]
+    self.x_index = kwargs[:x_index] || true
+    self.x_start_position = kwargs[:x_start_position] || rand(screen_width)
+    self.y_start_position = kwargs[:y_start_position] || rand(screen_height)
 
-    @direction = X_INDEX ? 'right' : 'down'
+    self.direction = x_index ? 'right' : 'down'
 
     4.times do |index|
-      @tail.push [(X_INDEX ? index : 0) + X_POSITION, (X_INDEX ? 0 : index) + Y_POSITION]
+      body.push [(x_index ? index : 0) + x_start_position, (x_index ? 0 : index) + y_start_position]
     end
   end
 
   def draw
-    @tail.each do |t|
-      Square.new(x: t[0]*@square_size, y: t[1]*@square_size , color: '#5a5255', size: @square_size-1)
+    body.each do |t|
+      Square.new(x: t[0]*square_size, y: t[1]*square_size , color: '#5a5255', size: square_size-1)
     end
   end
 
   def move
-    @tail.shift unless @growing
-    @tail.push(set_position(x_direction, y_direction))
-    @growing = false
+    body.shift unless growing
+    body.push(set_position(x_direction, y_direction))
+    self.growing = false
+    true
   end
 
   def set_direction new_dir
@@ -53,34 +63,34 @@ class Snake
   end
 
   def grow
-    @growing = true
+    self.growing = true
   end
 
   def auto_hit?
-    @tail.uniq.length != @tail.length
+    body.uniq.length != body.length
   end
 
 
   private
     def head
-      @tail.last
+      body.last
     end
 
     def can_change_direction? new_dir
-      return !(FORBIDDEN_MOVEMENT[new_dir] == @direction)
+      return !(FORBIDDEN_MOVEMENT[new_dir] == direction)
     end
 
     def set_position x, y
-      [x % @screen_width, y % @screen_height]
+      [x % screen_width, y % screen_height]
     end
 
     #TODO METAPROGRAMAÇÂO NESSAS DUAS FUNÇÕES
     def x_direction
-      head[0]+X_MOVEMENT[@direction]
+      head[0]+X_MOVEMENT[direction]
     end
 
     def y_direction
-      head[1]+Y_MOVEMENT[@direction]
+      head[1]+Y_MOVEMENT[direction]
     end
 
 end
