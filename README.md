@@ -1,10 +1,10 @@
 SNAKE GAME USING RUBY2D.
 
-**add gem ruby2d**
+**Add gem ruby2d**
 ```
 gem install ruby2d
 ```
-**to start just execute:**
+**To start just execute**
 ```
 ruby match.rb
 ```
