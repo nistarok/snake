@@ -8,15 +8,25 @@ require './ball.rb'
 class Match
   require 'ruby2d'
 
-  SQUARE_SIZE=20
+  SQUARE_SIZE = 20
   SCREEN_WIDTH = Window.width / SQUARE_SIZE
   SCREEN_HEIGHT = Window.height / SQUARE_SIZE
 
-
   def start_game
-    @snake = Snake.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
-    @game = Game.new
-    @ball = Ball.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
+    if @game.nil? || @game.is_finished?
+      @snake = Snake.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
+      @game = Game.new
+      @ball = Ball.new(square_size: SQUARE_SIZE, screen_width: SCREEN_WIDTH, screen_height: SCREEN_HEIGHT)
+    end
+  end
+
+  def pause_match
+    @game.set_paused if @game.is_playing?
+  end
+
+
+  def change_match_state
+    @game.is_paused? ? @game.set_playing : start_game
   end
 
   def screen_params
@@ -37,13 +47,13 @@ class Match
 
     # Validate inputs
     key_event_validation
-    # Print o window
+    # Print window
     Ruby2D::Window.show
   end
 
   def att_screen
     Ruby2D::Window.clear
-    unless @game.finished
+    unless @game.is_finished? || @game.is_paused?
       @snake.move
       @ball.draw
     end
@@ -61,14 +71,20 @@ class Match
     end
 
     if @snake.auto_hit?
-      @game.finish
+      @game.set_finished
     end
   end
 
   def key_event_validation
     Ruby2D::Window.on :key_down do |event|
-      @snake.set_direction event.key if Snake::DIRECTIONS.include? event.key
-      start_game if event.key == 'return' && @game.finished
+      case
+      when Snake::DIRECTIONS.include?(event.key) then
+        @snake.set_direction event.key
+      when event.key == 'return' then
+        change_match_state if event.key == 'return'
+      when event.key == 'p' then
+        pause_match
+      end
     end
   end
 end
