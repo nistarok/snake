@@ -26,23 +26,27 @@ class Match
 
 
   def change_match_state
-    @game.is_paused? ? @game.set_playing : start_game
+    !!@game && @game.is_paused? ? @game.set_playing : start_game
   end
 
   def screen_params
     Ruby2D::Window.set background: '#b8d8be', title: 'SNAKE'
     Ruby2D::Window.set fps_cap: 20
+
+    Text.new("Press ENTER to start the game") if @game.nil?
   end
 
   def match
     screen_params
-    start_game
+    # start_game
 
     Ruby2D::Window.update do
       # Att all events on screen
-      att_screen
-      # Get colision with itself and the ball
-      match_colisions
+      if !!@game
+        att_screen
+        # Get colision with itself and the ball
+        match_colisions
+      end
     end
 
     # Validate inputs
